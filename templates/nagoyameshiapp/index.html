@@ -1,0 +1,30 @@
+{% extends "nagoyameshiapp/base.html" %}
+
+{% block head %}
+{% endblock %}
+
+
+
+{% block main %}
+<h1>NAGOYAMESHI</h1>
+
+<form action="" method="GET">
+    <div class="input-group">
+
+        <select name="category">
+            {% for category in categories %}
+            <option value="{{category.id}}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+
+        <input class="form-control" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
+        <input class="btn btn-outline-primary" type="submit" value="検索">
+
+    </div>
+</form>
+
+{% for restaurant in restaurants %}
+<div>{{ restaurant.name }}</div>
+{% endfor %}
+
+{% endblock %}

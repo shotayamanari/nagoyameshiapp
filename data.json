@@ -1,0 +1,13 @@
+[
+{"model": "nagoyameshiapp.category", "pk": 1, "fields": {"name": "和食", "created_at": "2024-06-22T02:00:14Z", "updated_at": "2024-06-22T02:00:22.918Z"}}, 
+{"model": "nagoyameshiapp.restaurant", "pk": 1,  "fields": {"category": 1, "name": "和食A", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}}, 
+{"model": "nagoyameshiapp.restaurant", "pk": 2,  "fields": {"category": 1, "name": "和食B", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 3,  "fields": {"category": 1, "name": "和食C", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 4,  "fields": {"category": 1, "name": "和食D", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 5,  "fields": {"category": 1, "name": "和食E", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 6,  "fields": {"category": 1, "name": "和食F", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 7,  "fields": {"category": 1, "name": "和食G", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 8,  "fields": {"category": 1, "name": "和食H", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 9,  "fields": {"category": 1, "name": "和食I", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}},
+{"model": "nagoyameshiapp.restaurant", "pk": 10, "fields": {"category": 1, "name": "和食J", "image": "nagoyameshiapp/restaurant/image/2024-06-22_221922_IwIobSL.png", "description": "test", "start_at": "11:00:00", "end_at": "21:00:00"}}
+]
