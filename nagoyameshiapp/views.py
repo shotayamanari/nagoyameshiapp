@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
-from .models import Category,Restaurant
+from .models import Category,Restaurant,Review
 
-from .forms import RestaurantCategoryForm
+from .forms import RestaurantCategoryForm,ReviewForm
 
 from django.db.models import Q
 
@@ -32,9 +32,44 @@ class IndexView(View):
                 query &= Q(name__contains=word)
 
         context["restaurants"] = Restaurant.objects.filter(query)
-        context["categories"]  = Category.objects.filter(query)
+        context["categories"]  = Category.objects.all()
 
         return render(request, "nagoyameshiapp/index.html", context)
 
 # urls.pyから呼び出ししやすいようにする
 index = IndexView.as_view()
+
+
+
+# 個別ページを表示するビュー
+class RestaurantView(View):
+
+    def get(self, request, pk, *args, **kwargs):
+        context = {}
+
+        context["restaurant"] = Restaurant.objects.filter(id=pk).first()
+
+        context["reviews"]    = Review.objects.filter(restaurant=pk)
+
+
+
+        return render(request, "nagoyameshiapp/restaurant.html", context)
+
+restaurant = RestaurantView.as_view()
+
+
+
+# レビュー投稿用のビュー
+class ReviewView(View):
+    def post(self, request, pk, *args, **kwargs):
+
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+
+        return redirect("nagoyameshiapp:restaurant", pk)
+
+review = ReviewView.as_view()

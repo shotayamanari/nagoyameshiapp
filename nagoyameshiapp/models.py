@@ -12,7 +12,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
+    
+    def str_id(self):
+        return str(self.id)
 
 class Restaurant(models.Model):
     category    = models.ForeignKey(Category, verbose_name="カテゴリ", on_delete=models.CASCADE)

@@ -1,0 +1,35 @@
+{% extends "nagoyameshiapp/base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+
+<h1>NAGOYAMESHI</h1>
+<div>{{ restaurant.name }}</div>
+
+<h2>レビュー</h2>
+<form action="{% url 'nagoyameshiapp:review' restaurant.id %}" method="post">
+    {% csrf_token %}
+
+    <input type="hidden" name="restaurant" value="{{ restaurant.id }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+
+    <input type="text" name="content" placeholder="レビュー内容">
+
+
+    <input type="submit" value="送信">
+</form>
+
+<h2>レビュー一覧</h2>
+{% for review in reviews %}
+<div class="border">
+
+    <div>{{ review.content }}</div>
+
+</div>
+{% endfor %}
+
+<a href = "{% url 'nagoyameshiapp:index' %}">戻る</a>
+
+{% endblock %}

@@ -4,8 +4,8 @@
 {% endblock %}
 
 
-
 {% block main %}
+
 <h1>NAGOYAMESHI</h1>
 
 <form action="" method="GET">
@@ -13,7 +13,9 @@
 
         <select name="category">
             {% for category in categories %}
-            <option value="{{category.id}}">{{category.name}}</option>
+            
+            <option value="{{category.id}}" {% if request.GET.category == category.str_id %} selected {% endif %} > {{category.name}} </option>
+
             {% endfor %}
         </select>
 
@@ -24,7 +26,13 @@
 </form>
 
 {% for restaurant in restaurants %}
-<div>{{ restaurant.name }}</div>
+    
+    <div class="border">
+        <div>{{ restaurant.name }}</div>
+
+        <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
+    </div>
+    
 {% endfor %}
 
 {% endblock %}
