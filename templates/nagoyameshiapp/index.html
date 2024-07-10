@@ -6,12 +6,16 @@
 
 {% block main %}
 
-<h1>NAGOYAMESHI</h1>
+<h1 class="title">NAGOYAMESHI</h1>
+<img src="media/main-visual-1.jpg" id="main_visual" class="slider">
 
 <form action="" method="GET">
     <div class="input-group">
 
         <select name="category">
+
+            <option value="">未選択</option>
+
             {% for category in categories %}
             
             <option value="{{category.id}}" {% if request.GET.category == category.str_id %} selected {% endif %} > {{category.name}} </option>
@@ -19,7 +23,7 @@
             {% endfor %}
         </select>
 
-        <input class="form-control" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
+        <input class="form-control form-control-lg" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
         <input class="btn btn-outline-primary" type="submit" value="検索">
 
     </div>
@@ -28,11 +32,14 @@
 {% for restaurant in restaurants %}
     
     <div class="border">
-        <div>{{ restaurant.name }}</div>
+
+        <div class="restaurantname">
+            {{ restaurant.name }}
+        </div>
 
         <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
     </div>
     
 {% endfor %}
-
+<a href = "{% url 'nagoyameshiapp:index' %}">TOPに戻る</a>
 {% endblock %}

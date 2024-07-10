@@ -8,12 +8,40 @@
 <h1>NAGOYAMESHI</h1>
 <div>{{ restaurant.name }}</div>
 
+<h2>お気に入り</h2>
+<form action="{% url 'nagoyameshiapp:favorite' restaurant.id %}" method="post">
+    {% csrf_token %}
+
+    {% if is_favorite %}
+    <input class="btn btn-danger" type="submit" value="お気に入り解除">
+    {% else %}
+    <input class="btn btn-success" type="submit" value="お気に入り登録">
+    {% endif %}
+
+</form>
+
+
+<h2>予約フォーム</h2>
+
+<form action="{% url 'nagoyameshiapp:reservation' restaurant.id %}" method="post">
+    {% csrf_token %}
+
+    <input type="number" min="1" name="headcount" placeholder="予約人数">
+    <input type="datetime-local" name="datetime" placeholder="予約日時">
+
+    <input type="submit" value="予約する">
+
+</form>
+
+
 <h2>レビュー</h2>
 <form action="{% url 'nagoyameshiapp:review' restaurant.id %}" method="post">
     {% csrf_token %}
 
+    {% comment %}
     <input type="hidden" name="restaurant" value="{{ restaurant.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
+    {% endcomment %}
 
     <input type="text" name="content" placeholder="レビュー内容">
 
@@ -24,12 +52,12 @@
 <h2>レビュー一覧</h2>
 {% for review in reviews %}
 <div class="border">
-
+    <div>{{ review.user }}</div>
     <div>{{ review.content }}</div>
 
 </div>
 {% endfor %}
 
-<a href = "{% url 'nagoyameshiapp:index' %}">戻る</a>
+<a href = "{% url 'nagoyameshiapp:index' %}">TOPに戻る</a>
 
 {% endblock %}

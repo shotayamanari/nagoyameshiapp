@@ -13,6 +13,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+    #カテゴリ検索した時に、検索した後にカテゴリがセレクトされるように、
+    #カテゴリのIDの数字を文字列型に変換する関数を準備する。
     def str_id(self):
         return str(self.id)
 
@@ -48,13 +50,13 @@ class Review(models.Model):
 
 
 class Favorite(models.Model):
-    uesr        = models.ForeignKey(User, verbose_name="予約者", on_delete=models.CASCADE)
+    user        = models.ForeignKey(User, verbose_name="お気に入り登録者", on_delete=models.CASCADE)
     restaurant  = models.ForeignKey(Restaurant, verbose_name="店舗", on_delete=models.CASCADE)
 
     created_at  = models.DateTimeField(verbose_name="作成日時", default=timezone.now)
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 
 class Reservation(models.Model):
@@ -66,7 +68,9 @@ class Reservation(models.Model):
 
     created_at  = models.DateTimeField(verbose_name="作成日時", default=timezone.now)
     updated_at  = models.DateTimeField(verbose_name="更新日時", auto_now=True)
-
+    
+    def __str__(self):
+        return self.user.username
 
 class PremiumUser(models.Model):
     user        = models.ForeignKey(User, verbose_name="会員", on_delete=models.CASCADE)
