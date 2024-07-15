@@ -6,40 +6,77 @@
 
 {% block main %}
 
-<h1 class="title">NAGOYAMESHI</h1>
-<img src="media/main-visual-1.jpg" id="main_visual" class="slider">
-
-<form action="" method="GET">
-    <div class="input-group">
-
-        <select name="category">
-
-            <option value="">未選択</option>
-
-            {% for category in categories %}
-            
-            <option value="{{category.id}}" {% if request.GET.category == category.str_id %} selected {% endif %} > {{category.name}} </option>
-
-            {% endfor %}
-        </select>
-
-        <input class="form-control form-control-lg" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
-        <input class="btn btn-outline-primary" type="submit" value="検索">
-
+<div class="slide-wrapper">
+    <div id="slide" class="slide">
+        <div>
+            <img src="media/images/ひつまぶし.jpg">
+        </div>
+        <div>
+            <img src="media/images/味噌カツ.jpg">
+        </div>
+        <div>
+            <img src="media/images/味噌煮込みうどん.jpg">
+        </div>
     </div>
-</form>
 
-{% for restaurant in restaurants %}
-    
-    <div class="border">
+    <span id="prev" class="prev"></span>
+    <span id="next" class="next"></span>
 
-        <div class="restaurantname">
-            {{ restaurant.name }}
+    <ul class="indicator" id="indicator">
+        <li class="list"></li>
+        <li class="list"></li>
+        <li class="list"></li>
+    </ul>
+</div>
+
+
+<h2 class="subtitle" id="search-restaurant">店舗検索</h2>
+    <form action="" method="GET">
+        <div class="input-group">
+
+            <select name="category">
+
+                <option value="">未選択</option>
+
+                {% for category in categories %}
+
+                <option value="{{category.id}}" {% if request.GET.category == category.str_id %} selected {% endif %} > {{category.name}} </option>
+
+                {% endfor %}
+            </select>
+                <input class="form-control" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
+                <input class="btn btn-outline-primary" type="submit" value="検索">
+
+        </div>
+    </form>
+
+    {% for restaurant in restaurants %}
+
+        <div class="border">
+
+            <div class="restaurantname">
+                {{ restaurant.name }}
+            </div>
+
+            <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
         </div>
 
-        <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
-    </div>
-    
-{% endfor %}
-<a href = "{% url 'nagoyameshiapp:index' %}">TOPに戻る</a>
+    {% endfor %}
+
+
+<h2 class="subtitle" id="new-restaurant">新着店舗</h2>
+    {% for restaurant in restaurants %}
+
+        <div class="border">
+
+            <div class="restaurantname">
+                {{ restaurant.name }}
+            </div>
+
+            <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
+        </div>
+
+    {% endfor %}
+
+
 {% endblock %}

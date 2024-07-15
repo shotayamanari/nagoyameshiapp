@@ -84,6 +84,13 @@ class ReviewView(View):
 review = ReviewView.as_view()
 
 
+
+
+
+
+
+
+
 # お気に入り登録用のビュー
 class FavoriteView(View):
     def post(self, request, pk, *args, **kwargs):

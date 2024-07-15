@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+#TODO
 
 class Category(models.Model):
     name        = models.CharField(verbose_name="名前", max_length=15)
@@ -71,6 +72,8 @@ class Reservation(models.Model):
     
     def __str__(self):
         return self.user.username
+    
+    #TODO CLEAN
 
 class PremiumUser(models.Model):
     user        = models.ForeignKey(User, verbose_name="会員", on_delete=models.CASCADE)

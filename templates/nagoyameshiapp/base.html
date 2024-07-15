@@ -19,24 +19,42 @@
     {% endblock %}
 </head>
 <body>
-
-    <ul class="nav justify-content-end">
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">ログイン</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">新規登録</a>
-        </li>
-    </ul>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #D6E5DF;">  
+        <a class="navbar-brand" href="{% url 'nagoyameshiapp:index' %}">NAGOYAMESHI</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'nagoyameshiapp:index' %}#search-restaurant">店舗検索</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'nagoyameshiapp:index' %}#new-restaurant">新着店舗</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">新規登録</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">ログイン</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     {% block main %}
     {% endblock %}
     
     {# Bootstrap #}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
+    
     {# JavaScript #}
-    <script src="{% static 'js/style.js' %}"></script>
+    <script src="{% static 'style.js' %}"></script>
+<footer>
+©NAGOYAMESHI
+</footer>
 
 </body>
 </html>

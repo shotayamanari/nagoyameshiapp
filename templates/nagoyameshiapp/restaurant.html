@@ -5,59 +5,132 @@
 
 {% block main %}
 
-<h1>NAGOYAMESHI</h1>
-<div>{{ restaurant.name }}</div>
+<article>
 
-<h2>お気に入り</h2>
-<form action="{% url 'nagoyameshiapp:favorite' restaurant.id %}" method="post">
-    {% csrf_token %}
+    <div class="restaurant_name">
+        {# 店舗名称 #}
+        <h1 >{{ restaurant.name }}</h1>
 
-    {% if is_favorite %}
-    <input class="btn btn-danger" type="submit" value="お気に入り解除">
-    {% else %}
-    <input class="btn btn-success" type="submit" value="お気に入り登録">
-    {% endif %}
+        {# お気に入り登録/解除 #}
+        <form action="{% url 'nagoyameshiapp:favorite' restaurant.id %}" method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2 col-6 mx-auto">
+                {% if is_favorite %}
+                <input class="btn btn-danger" type="submit" value="お気に入り解除">
+                {% else %}
+                <input class="btn btn-success" type="submit" value="お気に入り登録">
+                {% endif %}
+            </div>
+        </form>
+    </div>
 
-</form>
+    <div class="restaurant_table">
+        {# 店舗の画像 #}
+        <img class="img-thumbnail" src="{{ restaurant.image.url }}" style="width: 50% ; height: 100%;">
+
+        {# 店舗の詳細 #}
+        <table class="table">
+            <tr>
+                <td>
+                    <span>詳細 :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.description }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>カテゴリ :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.category }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>予算 :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.cost }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>営業時間 :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.start_at }} ~ {{ restaurant.end_at }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>電話番号 :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.tel }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>郵便番号 :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.post_code }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>住所 :</span>
+                </td>
+                <td>
+                    <span>{{ restaurant.address }}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3 class="subtitle">~ 予約フォーム ~</h3>
+
+    <form action="{% url 'nagoyameshiapp:reservation' restaurant.id %}" method="post">
+        {% csrf_token %}
+
+        <input class="form-control" type="number" min="1" name="headcount" placeholder="予約人数">
+        <input class="form-control" type="datetime-local" name="datetime" placeholder="予約日時">
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <input class="btn btn-outline-primary" type="submit" value="予約する"style="margin-top: 20px;">
+        </div>
+
+    </form>
 
 
-<h2>予約フォーム</h2>
+    <h3 class="subtitle">~ レビュー投稿 ~</h3>
+    <form action="{% url 'nagoyameshiapp:review' restaurant.id %}" method="post">
+        {% csrf_token %}
 
-<form action="{% url 'nagoyameshiapp:reservation' restaurant.id %}" method="post">
-    {% csrf_token %}
+        {% comment %}
+        <input type="hidden" name="restaurant" value="{{ restaurant.id }}">
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        {% endcomment %}
 
-    <input type="number" min="1" name="headcount" placeholder="予約人数">
-    <input type="datetime-local" name="datetime" placeholder="予約日時">
+        <div class="form-floating">
+            <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 150px; width: 100%;"></textarea>
+            <label for="floatingTextarea2">レビュー内容</label>
+            
+            <div class="d-grid gap-2 col-6 mx-auto">
+               <button class="btn btn-outline-primary" type="submit" style="margin-top: 20px;">送信</button>
+            </div>
 
-    <input type="submit" value="予約する">
+        </div>
+    </form>
 
-</form>
-
-
-<h2>レビュー</h2>
-<form action="{% url 'nagoyameshiapp:review' restaurant.id %}" method="post">
-    {% csrf_token %}
-
-    {% comment %}
-    <input type="hidden" name="restaurant" value="{{ restaurant.id }}">
-    <input type="hidden" name="user" value="{{ request.user.id }}">
-    {% endcomment %}
-
-    <input type="text" name="content" placeholder="レビュー内容">
-
-
-    <input type="submit" value="送信">
-</form>
-
-<h2>レビュー一覧</h2>
-{% for review in reviews %}
-<div class="border">
-    <div>{{ review.user }}</div>
-    <div>{{ review.content }}</div>
-
-</div>
-{% endfor %}
-
-<a href = "{% url 'nagoyameshiapp:index' %}">TOPに戻る</a>
-
+    <h3 class="subtitle">~ レビュー一覧 ~</h3>
+    {% for review in reviews %}
+    <div>
+        <div id="reviewuser">{{ review.user }}</div>
+        <div id="reviewcontent">{{ review.content }}</div>
+        <hr>
+    </div>
+    {% endfor %}
+</article>
 {% endblock %}
