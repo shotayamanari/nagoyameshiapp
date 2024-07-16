@@ -4,6 +4,7 @@ body{
     padding-left: 10%;
     padding-right: 10%;
     color: #333;
+    font-size: 20px;
 }
 
 article{
@@ -11,11 +12,11 @@ article{
 }
 
 h1{
-    font-size: 26px;
+    font-size: 45px;
 }
 
 h2{
-    font-size: 23px;
+    font-size: 35px;
 }
 
 .fixed-top{
@@ -29,7 +30,7 @@ h2{
 }
 
 h3{
-    font-size: 20px;
+    font-size: 25px;
 }
 
 /* ↓ スライドの外枠 */
@@ -146,7 +147,7 @@ nav{
 
 #reviewuser{
     font-weight: bold;
-    font-size: 20px;
+    font-size: 23px;
     padding-bottom: 10px;
 }
 
@@ -172,5 +173,9 @@ nav{
 }
 
 .reservation_input{
+    display: flex;
+}
+
+.restaurant_det{
     display: flex;
 }

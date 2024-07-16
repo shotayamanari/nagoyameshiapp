@@ -24,9 +24,12 @@
         </form>
     </div>
 
-    <div class="restaurant_table">
+    <a href="{% url 'nagoyameshiapp:index' %}" style="font-size: 20px;">ホーム</a>
+    ＞店舗詳細
+
+    <div class="restaurant_table gap-5">
         {# 店舗の画像 #}
-        <img class="img-thumbnail" src="{{ restaurant.image.url }}" style="width: 50% ; height: 100%;">
+        <img class="img-thumbnail" src="{{ restaurant.image.url }}" style="width: 30% ; height: 30%;">
 
         {# 店舗の詳細 #}
         <table class="table">
@@ -89,7 +92,7 @@
         </table>
     </div>
 
-    <h3 class="subtitle">~ 予約フォーム ~</h3>
+    <h2 class="subtitle">~ 予約フォーム ~</h2>
 
     <form action="{% url 'nagoyameshiapp:reservation' restaurant.id %}" method="post">
         {% csrf_token %}
@@ -106,7 +109,7 @@
     </form>
 
 
-    <h3 class="subtitle">~ レビュー投稿 ~</h3>
+    <h2 class="subtitle">~ レビュー投稿 ~</h2>
     <form action="{% url 'nagoyameshiapp:review' restaurant.id %}" method="post">
         {% csrf_token %}
 
@@ -126,7 +129,7 @@
         </div>
     </form>
 
-    <h3 class="subtitle">~ レビュー一覧 ~</h3>
+    <h2 class="subtitle">~ レビュー一覧 ~</h2>
     {% for review in reviews %}
     <div>
         <div id="reviewuser">{{ review.user }}</div>
@@ -135,10 +138,10 @@
         {# ログインユーザーのみのレビューを表示する #}
         {% if request.user == review.user %}
         <div class="d-flex justify-content-end gap-3">
-            <a href="{% url 'nagoyameshiapp:review_edit' review.id %}" class="btn btn-success btn-sm" >編集</a>
+            <a href="{% url 'nagoyameshiapp:review_edit' review.id %}" class="btn btn-success" >編集</a>
             <form action="{% url 'nagoyameshiapp:review_delete' review.id %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="削除" class="btn btn-danger btn-sm">
+                <input type="submit" value="削除" class="btn btn-danger ">
             </form>
         </div>
         {% endif %}

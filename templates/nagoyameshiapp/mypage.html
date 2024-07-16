@@ -5,9 +5,10 @@
 
 {% block main %}
 <article>
-    <h2 class="subtitle">{{ request.user.username }}さんのマイページ</h2>
+    <a href="#" onclick="history.back()" style="font-size: 18px; padding-top: 10px;">＜戻る</a>
+    <h1 class="subtitle">{{ request.user.username }}さんのマイページ</h1>
 
-    <h3 class="subtitle">予約</h3>
+    <h2 class="subtitle">予約</h2>
     <div>
         <table class="table">
             <tr>
@@ -26,7 +27,7 @@
     </div>
 
 
-    <h3 class="subtitle">お気に入り</h3>
+    <h2 class="subtitle">お気に入り</h2>
     <div>
         <table class="table">
             <tr>
@@ -45,7 +46,7 @@
 
 
 
-    <h3 class="subtitle">レビュー</h3>
+    <h2 class="subtitle">レビュー</h2>
     <div>
         <table class="table">
             <tr>

@@ -30,7 +30,7 @@
 </div>
 
 
-<h2 class="subtitle" id="search-restaurant">店舗検索</h2>
+<h2 class="subtitle" id="search-restaurant"></h2>
     <form action="" method="GET">
         <div class="input-group">
 
@@ -50,18 +50,20 @@
         </div>
     </form>
 
-    {% for restaurant in restaurants %}
-
+<h2 class="subtitle" id="list-restaurant">店舗一覧</h2>
+    
+    <div class="restaurant_det gap-3">
+        {% for restaurant in restaurants %}
         <div class="border">
-
-            <div class="restaurantname">
-                {{ restaurant.name }}
-            </div>
-
-            <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
+            <h3>{{ restaurant.name }}</h3>
+            <img src="{{ restaurant.image.url }}" style="width: 300px ; height: 300px;">
+            <div>カテゴリ：{{ restaurant.category }}</div>
+            <div>価格：{{ restaurant.cost }}～</div>
+            <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}" class="btn btn-success">詳細</a>
         </div>
-
-    {% endfor %}
+        {% endfor %}
+    </div>
+    
 
 
 <h2 class="subtitle" id="new-restaurant">新着店舗</h2>
