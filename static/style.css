@@ -1,5 +1,6 @@
 body{
     background-color: #f7fcfa;
+    padding-top: 50px;
     padding-left: 10%;
     padding-right: 10%;
     color: #333;
@@ -15,6 +16,11 @@ h1{
 
 h2{
     font-size: 23px;
+}
+
+.fixed-top{
+    padding-left: 10%;
+    padding-right: 10%;
 }
 
 .subtitle{
@@ -162,5 +168,9 @@ nav{
 }
 
 .restaurant_table{
+    display: flex;
+}
+
+.reservation_input{
     display: flex;
 }

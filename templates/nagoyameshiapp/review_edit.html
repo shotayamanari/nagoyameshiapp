@@ -1,0 +1,24 @@
+{% extends "nagoyameshiapp/base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<article>
+    <h3>レビュー編集</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-floating">
+            <textarea class="form-control" name="content" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 150px; width: 100%;" >{{ review.content }}</textarea>
+            <label for="floatingTextarea2">レビュー内容</label>
+        
+            <div class="d-grid gap-2 col-6 mx-auto">
+            <button class="btn btn-outline-primary" type="submit" style="margin-top: 20px;">送信</button>
+            </div>
+        </div>
+    </form>
+</article>
+
+
+{% endblock %}
+

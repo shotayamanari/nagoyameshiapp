@@ -94,8 +94,10 @@
     <form action="{% url 'nagoyameshiapp:reservation' restaurant.id %}" method="post">
         {% csrf_token %}
 
-        <input class="form-control" type="number" min="1" name="headcount" placeholder="予約人数">
-        <input class="form-control" type="datetime-local" name="datetime" placeholder="予約日時">
+        <div class="reservation_input gap-3">
+            <input class="form-control" type="number" min="1" name="headcount" placeholder="予約人数" style="width: 50%;">
+            <input class="form-control" type="datetime-local" name="datetime" placeholder="予約日時"  style="width: 50%;">
+        </div>
 
         <div class="d-grid gap-2 col-6 mx-auto">
             <input class="btn btn-outline-primary" type="submit" value="予約する"style="margin-top: 20px;">
@@ -129,6 +131,17 @@
     <div>
         <div id="reviewuser">{{ review.user }}</div>
         <div id="reviewcontent">{{ review.content }}</div>
+
+        {# ログインユーザーのみのレビューを表示する #}
+        {% if request.user == review.user %}
+        <div class="d-flex justify-content-end gap-3">
+            <a href="{% url 'nagoyameshiapp:review_edit' review.id %}" class="btn btn-success btn-sm" >編集</a>
+            <form action="{% url 'nagoyameshiapp:review_delete' review.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="削除" class="btn btn-danger btn-sm">
+            </form>
+        </div>
+        {% endif %}
         <hr>
     </div>
     {% endfor %}

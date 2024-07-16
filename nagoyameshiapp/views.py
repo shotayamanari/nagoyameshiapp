@@ -61,7 +61,6 @@ class RestaurantView(View):
 restaurant = RestaurantView.as_view()
 
 
-
 # レビュー投稿用のビュー
 class ReviewView(View):
     def post(self, request, pk, *args, **kwargs):
@@ -84,11 +83,54 @@ class ReviewView(View):
 review = ReviewView.as_view()
 
 
+# レビュー編集用のビュー
+class ReviewEditView(View):
+    def get(self, request, pk, *args, **kwargs):
+
+        context = {}
+        context["review"] = Review.objects.filter(id=pk,user=request.user).first()
+
+        return render(request, "nagoyameshiapp/review_edit.html",context)
+
+        #                   ↓このpkは編集したいレビューのidを示す
+    def post(self, request, pk, *args, **kwargs):
+       
+        print("編集")
+
+        # 編集したいレビューのオブジェクトを取り出す
+        review = Review.objects.filter(id=pk,user=request.user).first()
+
+        # request.POSTの内容を書き換え可能にする。
+        copied = request.POST.copy()
+        copied["restaurant"]    = review.restaurant
+        copied["user"]          = request.user
+
+        # 編集したい場合は、引数にreviewを入れる
+        form = ReviewForm(copied,instance=review)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+
+        # 編集を終えた後、店舗の個別ページに返す　　　　　↓
+        return redirect("nagoyameshiapp:restaurant", review.restaurant.id)
+
+review_edit = ReviewEditView.as_view()
 
 
+# レビュー削除用のビュー
+class ReviewDeleteView(View):
+    def post(self, request, pk, *args, **kwargs):
 
+        review = Review.objects.filter(id=pk,user=request.user).first()
 
+        # deleteメソッドを利用する
+        review.delete()
 
+        return redirect("nagoyameshiapp:restaurant", review.restaurant.id)
+
+review_delete = ReviewDeleteView.as_view()
 
 
 # お気に入り登録用のビュー
@@ -142,3 +184,22 @@ class ReservationView(View):
         return redirect("nagoyameshiapp:restaurant", pk)
 
 reservation = ReservationView.as_view()
+
+# マイページ用のビュー
+class MypageView(View):
+    def get(self, request, *args, **kwargs):
+        
+        context = {}
+
+        # 自分のレビューと予約とお気に入りを表示させる
+        context["reviews"]     =  Review.objects.filter(user=request.user)
+        context["favorites"]   =  Favorite.objects.filter(user=request.user)
+        context["reservations"] =  Reservation.objects.filter(user=request.user)       
+
+
+        return render(request, "nagoyameshiapp/mypage.html",context)
+    
+    def post(self, request, *args, **kwargs):
+        pass
+
+mypage = MypageView.as_view()

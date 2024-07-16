@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
-#TODO
+from django.core.exceptions import ValidationError
 
 class Category(models.Model):
     name        = models.CharField(verbose_name="名前", max_length=15)
@@ -73,7 +73,16 @@ class Reservation(models.Model):
     def __str__(self):
         return self.user.username
     
-    #TODO CLEAN
+    # 予約の過去の日時を指定した場合の対応
+    def clean(self):
+        super().clean()
+
+        # 現在の時刻を取る
+        now = timezone.now()
+
+        # 指定した時刻と現在の時刻を比較する
+        if self.datetime < now :
+            raise ValidationError("予約日時が過去です")
 
 class PremiumUser(models.Model):
     user        = models.ForeignKey(User, verbose_name="会員", on_delete=models.CASCADE)

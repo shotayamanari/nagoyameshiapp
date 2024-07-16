@@ -19,31 +19,35 @@
     {% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #D6E5DF;">  
-        <a class="navbar-brand" href="{% url 'nagoyameshiapp:index' %}">NAGOYAMESHI</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'nagoyameshiapp:index' %}#search-restaurant">店舗検索</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'nagoyameshiapp:index' %}#new-restaurant">新着店舗</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">新規登録</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">ログイン</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
+    <div class='fixed-top'>
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #D6E5DF;">  
+            <a class="navbar-brand" href="{% url 'nagoyameshiapp:index' %}">NAGOYAMESHI</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'nagoyameshiapp:index' %}#search-restaurant">店舗検索</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'nagoyameshiapp:index' %}#new-restaurant">新着店舗</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">新規登録</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ログイン</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'nagoyameshiapp:mypage' %}">マイページ</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
     {% block main %}
     {% endblock %}
     
@@ -52,9 +56,11 @@
     
     {# JavaScript #}
     <script src="{% static 'style.js' %}"></script>
-<footer>
-©NAGOYAMESHI
-</footer>
 
+    <footer>
+        ©NAGOYAMESHI
+    </footer>
 </body>
+
+    
 </html>

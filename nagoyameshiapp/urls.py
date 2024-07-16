@@ -9,9 +9,15 @@ urlpatterns = [
                             #↑最後のスラッシュを入れておくこと
 
     path("review/<int:pk>/", views.review, name="review"),
+    
+    path("review_edit/<int:pk>/", views.review_edit, name="review_edit"),
+
+    path("review_delete/<int:pk>/", views.review_delete, name="review_delete"),
 
     path("favorite/<int:pk>/", views.favorite, name="favorite"),
 
     path("reservation/<int:pk>/", views.reservation, name="reservation"),
+
+    path("mypage/", views.mypage, name="mypage"),
 
 ]
