@@ -7,6 +7,13 @@ from .forms import RestaurantCategoryForm,ReviewForm,FavoriteForm,ReservationFor
 
 from django.db.models import Q
 
+from django.utils import timezone
+
+import datetime
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 class IndexView(View):
     def get(self, request, *args, **kwargs):
     
@@ -43,7 +50,7 @@ index = IndexView.as_view()
 
 
 # 個別ページを表示するビュー
-class RestaurantView(View):
+class RestaurantView(LoginRequiredMixin,View):
     def get(self, request, pk, *args, **kwargs):
         context = {}
 
@@ -62,7 +69,7 @@ restaurant = RestaurantView.as_view()
 
 
 # レビュー投稿用のビュー
-class ReviewView(View):
+class ReviewView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
 
         # request.POSTの内容を書き換え可能にする。
@@ -84,7 +91,7 @@ review = ReviewView.as_view()
 
 
 # レビュー編集用のビュー
-class ReviewEditView(View):
+class ReviewEditView(LoginRequiredMixin,View):
     def get(self, request, pk, *args, **kwargs):
 
         context = {}
@@ -120,7 +127,7 @@ review_edit = ReviewEditView.as_view()
 
 
 # レビュー削除用のビュー
-class ReviewDeleteView(View):
+class ReviewDeleteView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
 
         review = Review.objects.filter(id=pk,user=request.user).first()
@@ -132,9 +139,30 @@ class ReviewDeleteView(View):
 
 review_delete = ReviewDeleteView.as_view()
 
+# 予約キャンセル用のビューを作成する
+class ReservationDeleteView(LoginRequiredMixin,View):
+    def post(self, request, pk, *args, **kwargs):
+
+        reservation = Reservation.objects.filter(id=pk,user=request.user).first()
+
+        # キャンセルできるのは、現在の日時から1日先の未来の予約だけにする
+        deadline = timezone.now() + datetime.timedelta(days=1)
+
+        if deadline < reservation.datetime:
+            print("予約キャンセル")
+            reservation.delete()
+
+        return redirect("nagoyameshiapp:mypage")
+
+reservation_delete = ReservationDeleteView.as_view()
+        
+
+
+
+
 
 # お気に入り登録用のビュー
-class FavoriteView(View):
+class FavoriteView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
 
         # 店舗のお気に入り登録 
@@ -164,7 +192,8 @@ class FavoriteView(View):
 favorite = FavoriteView.as_view()
 
 
-class ReservationView(View):
+# 予約登録用のビュー
+class ReservationView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
         
         print("予約します")
@@ -185,8 +214,9 @@ class ReservationView(View):
 
 reservation = ReservationView.as_view()
 
+
 # マイページ用のビュー
-class MypageView(View):
+class MypageView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         
         context = {}
@@ -196,6 +226,9 @@ class MypageView(View):
         context["favorites"]   =  Favorite.objects.filter(user=request.user)
         context["reservations"] =  Reservation.objects.filter(user=request.user)       
 
+        # 予約の〆日をコンテキストに追加し、mypageのテンプレートで利用
+        # 一日以上の予約
+        context["deadline"]   =  timezone.now() + datetime.timedelta(days=1)
 
         return render(request, "nagoyameshiapp/mypage.html",context)
     
@@ -203,3 +236,6 @@ class MypageView(View):
         pass
 
 mypage = MypageView.as_view()
+
+
+

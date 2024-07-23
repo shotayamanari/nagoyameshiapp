@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from datetime import datetime
 
 from django.core.exceptions import ValidationError
 
@@ -79,10 +80,14 @@ class Reservation(models.Model):
 
         # 現在の時刻を取る
         now = timezone.now()
+        
+        # TODO:指定した時間が営業時間外かどうかチェックする。
+        # self.datetime: datetime型
+        # self.datetime.time(): time型
 
-        # 指定した時刻と現在の時刻を比較する
-        if self.datetime < now :
-            raise ValidationError("予約日時が過去です")
+        if self.datetime.time() < self.restaurant.start_at or self.restaurant.end_at < self.datetime.time():   
+            raise ValidationError("営業時間外です")
+
 
 class PremiumUser(models.Model):
     user        = models.ForeignKey(User, verbose_name="会員", on_delete=models.CASCADE)

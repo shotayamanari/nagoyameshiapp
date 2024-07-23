@@ -29,7 +29,51 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+#################django-allauthでのメール認証設定ここから###################
+
+#djangoallauthでメールでユーザー認証する際に必要になる認証バックエンド
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+#ログイン時の認証方法はemailとパスワードとする
+ACCOUNT_AUTHENTICATION_METHOD   = "email"
+
+#ログイン時にユーザー名(ユーザーID)は使用しない
+ACCOUNT_USERNAME_REQUIRED       = False
+
+#ユーザー登録時に入力したメールアドレスに、確認メールを送信する事を必須(mandatory)とする
+ACCOUNT_EMAIL_VARIFICATION  = "mandatory"
+
+#ユーザー登録画面でメールアドレス入力を要求する(True)
+ACCOUNT_EMAIL_REQUIRED      = True
+
+
+#DEBUGがTrueのとき、メールの内容は全て端末に表示させる(実際にメールを送信したい時はここをコメントアウトする)
+if DEBUG:
+    EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
+else:
+    #TODO:SendgridのAPIキーと送信元メールアドレスを入れていない時、以下が実行されると必ずエラーになる点に注意。
+    EMAIL_BACKEND       = "sendgrid_backend.SendgridBackend"
+    DEFAULT_FROM_EMAIL  = "ここにデフォルトの送信元メールアドレスを指定"
+
+    #【重要】APIキーの入力後、GitHubへのプッシュは厳禁。可能であれば.gitignoreに指定した別ファイルから読み込む
+    SENDGRID_API_KEY    = "ここにsendgridのAPIkeyを記述する"
+
+    #Sendgrid利用時はサンドボックスモードを無効化しておく。
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+
+#################django-allauthでのメール認証設定ここまで###################
+    
+    
+    
+#django-allauth関係。django.contrib.sitesで使用するSITE_IDを指定する
+SITE_ID = 1
+#django-allauthログイン時とログアウト時のリダイレクトURL
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,6 +82,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django.contrib.sites', 
+    'allauth', 
+    'allauth.account', 
+    'allauth.socialaccount', 
 
     'nagoyameshiapp',
 
@@ -51,6 +100,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'

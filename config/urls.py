@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include("nagoyameshiapp.urls"))
+    path("", include("nagoyameshiapp.urls")),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

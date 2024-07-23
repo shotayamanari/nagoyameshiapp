@@ -15,12 +15,21 @@
                 <th>店舗名</th>
                 <th>日時</th>
                 <th>人数</th>
+                <th>キャンセル</th>
             </tr>
             {% for reservation in reservations %}
             <tr>
                 <td>{{ reservation.restaurant }}</td>
                 <td>{{ reservation.datetime }}</td>
                 <td>{{ reservation.headcount }}</td>
+                <td>
+                    {% if deadline < reservation.datetime %}
+                    <form action="{%url 'nagoyameshiapp:reservation_delete' reservation.id %}" method="post">
+                        {% csrf_token %}
+                        <input class="btn  btn-danger" type="submit" value="予約キャンセル">
+                    {% endif %}
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </table>

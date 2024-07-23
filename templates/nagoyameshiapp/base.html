@@ -38,15 +38,22 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">新規登録</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">ログイン</a>
-                    </li>
+                    <!-- ログインしている場合とログインしていない場合で処理を分岐させる -->
+                    {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'nagoyameshiapp:mypage' %}">マイページ</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_logout' %}">ログアウト</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_signup' %}">新規登録</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_login' %}">ログイン</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>

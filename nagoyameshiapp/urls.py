@@ -18,6 +18,8 @@ urlpatterns = [
 
     path("reservation/<int:pk>/", views.reservation, name="reservation"),
 
+    path("reservation_delete/<int:pk>/", views.reservation_delete, name="reservation_delete"),
+
     path("mypage/", views.mypage, name="mypage"),
 
 ]
