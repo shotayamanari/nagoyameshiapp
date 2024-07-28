@@ -7,7 +7,6 @@ urlpatterns = [
 
     path("restaurant/<int:pk>/", views.restaurant, name="restaurant" ),
                             #↑最後のスラッシュを入れておくこと
-
     path("review/<int:pk>/", views.review, name="review"),
     
     path("review_edit/<int:pk>/", views.review_edit, name="review_edit"),

@@ -37,7 +37,7 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
-
+    
 
 class Review(models.Model):
     restaurant  = models.ForeignKey(Restaurant, verbose_name="店舗", on_delete=models.CASCADE)

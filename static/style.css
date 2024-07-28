@@ -178,4 +178,12 @@ nav{
 
 .restaurant_det{
     display: flex;
+    flex-wrap: wrap;
 }
+
+.restaurant_newdet{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+

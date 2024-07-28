@@ -56,7 +56,7 @@
         {% for restaurant in restaurants %}
         <div class="border">
             <h3>{{ restaurant.name }}</h3>
-            <img src="{{ restaurant.image.url }}" style="width: 300px ; height: 300px;">
+            <img src="{{ restaurant.image.url }}" style="width: 425px ; height: 405px;">
             <div>カテゴリ：{{ restaurant.category }}</div>
             <div>価格：{{ restaurant.cost }}～</div>
             <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}" class="btn btn-success">詳細</a>
@@ -67,18 +67,17 @@
 
 
 <h2 class="subtitle" id="new-restaurant">新着店舗</h2>
-    {% for restaurant in restaurants %}
 
+    <div class="restaurant_newdet gap-3">
+        {% for newrestaurant in newrestaurants %}
         <div class="border">
-
-            <div class="restaurantname">
-                {{ restaurant.name }}
-            </div>
-
-            <a href = "{% url 'nagoyameshiapp:restaurant' restaurant.id %}">詳細</a>
+            <h3>{{ newrestaurant.name }}</h3>
+            <img src="{{ newrestaurant.image.url }}" style="width: 425px ; height: 425px;">
+            <div>カテゴリ：{{ newrestaurant.category }}</div>
+            <div>価格：{{ newrestaurant.cost }}～</div>
+            <a href = "{% url 'nagoyameshiapp:restaurant' newrestaurant.id %}" class="btn btn-success">詳細</a>
         </div>
-
-    {% endfor %}
-
+        {% endfor %}
+    </div>
 
 {% endblock %}

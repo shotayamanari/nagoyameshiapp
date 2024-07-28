@@ -40,6 +40,7 @@ class IndexView(View):
                 query &= Q(name__contains=word)
 
         context["restaurants"] = Restaurant.objects.filter(query)
+        context["newrestaurants"] = Restaurant.objects.order_by('-created_at')[:5]
         context["categories"]  = Category.objects.all()
 
         return render(request, "nagoyameshiapp/index.html", context)
