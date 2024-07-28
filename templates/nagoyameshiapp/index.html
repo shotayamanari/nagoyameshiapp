@@ -44,10 +44,18 @@
 
                 {% endfor %}
             </select>
-                <input class="form-control" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
-                <input class="btn btn-outline-primary" type="submit" value="検索">
-
+                <input class="form-control btn-lg" type="text" name="search" placeholder="店舗名を入力" value="{{ request.GET.search }}">
+                <input class="btn btn-outline-primary btn-lg" type="submit" value="検索">
         </div>
+
+        <div class="sort">      
+            <input type="radio" class="btn-check " name="options" id="option1" autocomplete="off">
+            <label class="btn btn-outline-primary btn-lg" for="option1">価格の低い順</label>
+            
+            <input type="radio" class="btn-check " name="options" id="option2" autocomplete="off">
+            <label class="btn btn-outline-danger btn-lg" for="option2">価格の高い順</label>
+        </div>
+
     </form>
 
 <h2 class="subtitle" id="list-restaurant">店舗一覧</h2>
