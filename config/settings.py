@@ -182,3 +182,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+
+# 環境変数 : OSに直接設定をする変数 (APIキーやパスワードなどの公開しては行けない情報は、環境変数へ全て登録。↓のように呼び出すと良い。)
+# Stripeの設定
+
+import os
+
+if "STRIPE_PUBLISHABLE_KEY" in os.environ and "STRIPE_API_KEY" in os.environ and "STRIPE_PRICE_ID" in os.environ:
+    STRIPE_PUBLISHABLE_KEY  = os.environ["STRIPE_PUBLISHABLE_KEY"]
+    STRIPE_API_KEY          = os.environ["STRIPE_API_KEY"]
+    STRIPE_PRICE_ID         = os.environ["STRIPE_PRICE_ID"]
+
+# ハードコード(コードに直接APIキーを書くこと)した場合、GitHubへは送らないように。

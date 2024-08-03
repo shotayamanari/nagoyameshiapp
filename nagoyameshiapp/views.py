@@ -39,7 +39,12 @@ class IndexView(View):
 
                 query &= Q(name__contains=word)
 
-        context["restaurants"] = Restaurant.objects.filter(query)
+
+        sort = "id"
+        if "options" in request.GET:
+            sort = request.GET["options"]
+
+        context["restaurants"] = Restaurant.objects.filter(query).order_by(sort)
         context["newrestaurants"] = Restaurant.objects.order_by('-created_at')[:5]
         context["categories"]  = Category.objects.all()
 
@@ -237,6 +242,145 @@ class MypageView(LoginRequiredMixin,View):
         pass
 
 mypage = MypageView.as_view()
+
+
+
+
+# =========== stripe サブスクリプション関係のビュー ==============
+from django.conf import settings
+from django.urls import reverse_lazy
+
+import stripe
+stripe.api_key  = settings.STRIPE_API_KEY
+
+# セッションを作っている
+class CheckoutView(LoginRequiredMixin,View):
+    def post(self, request, *args, **kwargs):
+
+        # ↓3: Stripeがセッションを作る        # ↓ 2:セッションを作ってくれ。
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price': settings.STRIPE_PRICE_ID,
+                    'quantity': 1,
+                },
+            ],
+            payment_method_types=['card'],
+            mode='subscription',
+
+            # カード決済完了時のリダイレクト先の設定。(外部サイト(stripe)へ行く仕様上、URLは絶対パスでないといけない)
+            success_url=request.build_absolute_uri(reverse_lazy("nagoyameshiapp:success")) + '?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=request.build_absolute_uri(reverse_lazy("nagoyameshiapp:index")),
+        )
+
+        # セッションid
+        print( checkout_session["id"] )
+
+        # 4: 決済ページへクライアントをリダイレクトさせる。
+        return redirect(checkout_session.url)
+
+checkout    = CheckoutView.as_view()
+
+
+# 5: stripeのサイトでカード情報を入力する。
+# カード情報は 4242424242424242424242....
+# それ以外は適当でOK success_urlヘリダイレクトされる。
+
+# 8: 決済情報のチェック。パラメータのセッションidを使ってチェックをする。
+class SuccessView(LoginRequiredMixin,View):
+    def get(self, request, *args, **kwargs):
+
+        # パラメータにセッションIDがあるかチェック
+        if "session_id" not in request.GET:
+            print("セッションIDがありません。")
+            return redirect("nagoyameshiapp:index")
+
+        # ?session_id=adaijdoajdiaojdoaijdoj
+        # そのセッションIDは有効であるかチェック。
+        try:
+            checkout_session_id = request.GET['session_id']
+            checkout_session    = stripe.checkout.Session.retrieve(checkout_session_id)
+        except:
+            print( "このセッションIDは無効です。")
+            return redirect("nagoyameshiapp:index")
+
+        print(checkout_session)
+
+        # statusをチェックする。未払であれば拒否する。(未払いのsession_idを入れられたときの対策)
+        if checkout_session["payment_status"] != "paid":
+            print("未払い")
+            return redirect("nagoyameshiapp:index")
+
+        print("支払い済み")
+
+
+        # 有効であれば、セッションIDからカスタマーIDを取得。ユーザーモデルへカスタマーIDを記録する。
+        request.user.customer   = checkout_session["customer"]
+        request.user.save()
+
+        print("有料会員登録しました！")
+
+        # 実践ではありがとうございましたのページを表示する。
+        return redirect("nagoyameshiapp:index")
+
+success     = SuccessView.as_view()
+
+
+# サブスクリプションの操作関係
+class PortalView(LoginRequiredMixin,View):
+    def get(self, request, *args, **kwargs):
+
+        if not request.user.customer:
+            print( "有料会員登録されていません")
+            return redirect("nagoyameshiapp:index")
+
+        # ユーザーモデルに記録しているカスタマーIDを使って、ポータルサイトへリダイレクト
+        portalSession   = stripe.billing_portal.Session.create(
+            customer    = request.user.customer,
+            return_url  = request.build_absolute_uri(reverse_lazy("nagoyameshiapp:index")),
+        )
+
+        return redirect(portalSession.url)
+
+portal      = PortalView.as_view()
+
+
+class PremiumView(View):
+    def get(self, request, *args, **kwargs):
+        
+
+        # TODO: ↓ お気に入り・レビュー・予約のビューに入れる。
+
+        if not request.user.customer:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshiapp:index")
+
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=request.user.customer)
+        except:
+            print("このカスタマーIDは無効です。")
+
+            request.user.customer   = ""
+            request.user.save()
+
+            return redirect("nagoyameshiapp:index")
+
+
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+
+                return render(request, "nagoyameshiapp/premium.html")
+            else:
+                print("サブスクリプションが無効です。")
+
+
+        return redirect("nagoyameshiapp:index")
+
+premium     = PremiumView.as_view()
 
 
 

@@ -8,6 +8,20 @@
     <a href="#" onclick="history.back()" style="font-size: 18px; padding-top: 10px;">＜戻る</a>
     <h1 class="subtitle">{{ request.user.username }}さんのマイページ</h1>
 
+    <h2 class="subtitle">有料会員登録</h2>
+
+    <div>
+        <form action="{% url 'nagoyameshiapp:checkout' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="有料会員登録をする">
+        </form>
+    </div>
+
+
+
+
+
+
     <h2 class="subtitle">予約</h2>
     <div>
         <table class="table">
