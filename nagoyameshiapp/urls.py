@@ -25,6 +25,6 @@ urlpatterns = [
     path("checkout/", views.checkout, name="checkout"),
     path("success/", views.success, name="success"),
     path("portal/", views.portal, name="portal"),
-    #path("premium/", views.premium, name="premium"),
+    path("premium/", views.premium, name="premium"),
 
 ]
