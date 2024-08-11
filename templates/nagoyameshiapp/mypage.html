@@ -12,7 +12,7 @@
 
     <div>
         {% if is_premium %}
-        <a href = "{% url 'nagoyameshiapp:portal'%}">有料会員設定へ</a>
+        <a href="{% url 'nagoyameshiapp:portal' %}">有料会員設定へ</a>
         {% else %}
         <form action="{% url 'nagoyameshiapp:checkout' %}" method="post">
             {% csrf_token %}
@@ -20,11 +20,6 @@
         </form>
         {% endif %}
     </div>
-
-
-
-
-
 
     <h2 class="subtitle">予約</h2>
     <div>

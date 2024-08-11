@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+hh!-je-3^s_l7n#6nx+ivband0oawyejtq*kk0dzyk91!$$@p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -54,6 +54,9 @@ ACCOUNT_EMAIL_REQUIRED      = True
 if DEBUG:
     EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
 else:
+    EMAIL_BACKEND   = "django.core.mail.backends.console.EmailBackend"
+
+    """
     #TODO:SendgridのAPIキーと送信元メールアドレスを入れていない時、以下が実行されると必ずエラーになる点に注意。
     EMAIL_BACKEND       = "sendgrid_backend.SendgridBackend"
     DEFAULT_FROM_EMAIL  = "ここにデフォルトの送信元メールアドレスを指定"
@@ -63,6 +66,7 @@ else:
 
     #Sendgrid利用時はサンドボックスモードを無効化しておく。
     SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+    """
 
 #################django-allauthでのメール認証設定ここまで###################
     
@@ -173,7 +177,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [ BASE_DIR / 'static' ]
+
+# 開発中にのみ有効
+if DEBUG:
+    STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -197,3 +204,73 @@ else:
     print("stripe環境変数無し")
 
 # ハードコード(コードに直接APIキーを書くこと)した場合、GitHubへは送らないように。
+
+
+
+
+
+# 本番環境下(デプロイするとき)に有効にする
+if not DEBUG:
+
+    #INSTALLED_APPSにcloudinaryの追加
+    INSTALLED_APPS.append('cloudinary')
+    INSTALLED_APPS.append('cloudinary_storage')
+
+    # ALLOWED_HOSTSにホスト名)を入力
+    ALLOWED_HOSTS = [ os.environ["HOST"] ]
+
+    # CSRFトークンやパスワードのハッシュ化に使われる
+    SECRET_KEY = os.environ["SECRETKEY"]
+    
+    # 静的ファイル配信ミドルウェア、whitenoiseを使用。※ 順番不一致だと動かないため下記をそのままコピーする。
+    MIDDLEWARE = [ 
+        'django.middleware.security.SecurityMiddleware',
+        'whitenoise.middleware.WhiteNoiseMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+        "allauth.account.middleware.AccountMiddleware",
+        ]
+
+    # 静的ファイル(static)の存在場所を指定する。
+    STATIC_ROOT = BASE_DIR / 'static'
+
+    # DBの設定
+    DATABASES = { 
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME'    : os.environ["DB_NAME"],
+                'USER'    : os.environ["DB_USER"],
+                'PASSWORD': os.environ["DB_PASSWORD"],
+                'HOST'    : os.environ["DB_HOST"],
+                'PORT': '5432',
+                }
+            }
+
+    #DBのアクセス設定
+    import dj_database_url
+
+    db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    DATABASES['default'].update(db_from_env)
+    
+
+    #cloudinaryの設定
+    CLOUDINARY_STORAGE = { 
+            'CLOUD_NAME': os.environ["CLOUD_NAME"], 
+            'API_KEY'   : os.environ["API_KEY"], 
+            'API_SECRET': os.environ["API_SECRET"],
+            "SECURE"    : True,
+            }
+
+    #これは画像だけ(上限20MB)
+    #DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+    #これは動画だけ(上限100MB)
+    #DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.VideoMediaCloudinaryStorage'
+
+    #これで全てのファイルがアップロード可能(上限20MB。ビュー側でアップロードファイル制限するなら基本これでいい)
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.RawMediaCloudinaryStorage'
