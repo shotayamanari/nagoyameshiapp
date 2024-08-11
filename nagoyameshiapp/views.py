@@ -87,7 +87,7 @@ class ReviewView(LoginRequiredMixin,View):
 
         # カスタマーIDを元にStripeに問い合わせ
         try:
-            subscriptions = stripe.Subscription.list(customer=request.premium_user.premium_code)
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
         except:
             print("このカスタマーIDは無効です。")
 
@@ -106,8 +106,8 @@ class ReviewView(LoginRequiredMixin,View):
             else:
                 print("サブスクリプションが無効です。")
 
-        if is_active:
-                return render(request, "nagoyameshiapp/premium.html")
+        if not is_active:
+                return redirect("nagoyameshiapp:mypage")
 
         # request.POSTの内容を書き換え可能にする。
         copied = request.POST.copy()
@@ -123,7 +123,6 @@ class ReviewView(LoginRequiredMixin,View):
             print(form.errors)
 
         return redirect("nagoyameshiapp:restaurant", pk)
-        return redirect("nagoyameshiapp:index")
     
 # urls.pyから呼び出ししやすいようにする
 review = ReviewView.as_view()
@@ -132,14 +131,109 @@ review = ReviewView.as_view()
 class ReviewEditView(LoginRequiredMixin,View):
     def get(self, request, pk, *args, **kwargs):
 
+        ## 有料会員の確認 start ##
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshiapp:index")
+
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
+        except:
+            print("このカスタマーIDは無効です。")
+
+            premium_user.delete()
+
+            return redirect("nagoyameshiapp:index")
+
+        is_active = False
+
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                is_active = True
+                
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not is_active:
+                return redirect("nagoyameshiapp:mypage")
+
+        # request.POSTの内容を書き換え可能にする。
+        copied = request.POST.copy()
+        copied["restaurant"]    = pk
+        copied["user"]          = request.user
+
+        # copiedをバリデーションする。
+        form = ReviewForm(copied)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+        
+        ## 有料会員の確認 end ##
+
         context = {}
         context["review"] = Review.objects.filter(id=pk,user=request.user).first()
 
         return render(request, "nagoyameshiapp/review_edit.html",context)
 
+
         #                   ↓このpkは編集したいレビューのidを示す
     def post(self, request, pk, *args, **kwargs):
-       
+
+        ## 有料会員の確認 start ##
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshiapp:index")
+
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
+        except:
+            print("このカスタマーIDは無効です。")
+
+            premium_user.delete()
+
+            return redirect("nagoyameshiapp:index")
+
+        is_active = False
+
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                is_active = True
+                
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not is_active:
+                return redirect("nagoyameshiapp:mypage")
+
+        # request.POSTの内容を書き換え可能にする。
+        copied = request.POST.copy()
+        copied["restaurant"]    = pk
+        copied["user"]          = request.user
+
+        # copiedをバリデーションする。
+        form = ReviewForm(copied)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+        
+        ## 有料会員の確認 end ##
+
         print("編集")
 
         # 編集したいレビューのオブジェクトを取り出す
@@ -160,13 +254,59 @@ class ReviewEditView(LoginRequiredMixin,View):
 
         # 編集を終えた後、店舗の個別ページに返す　　　　　↓
         return redirect("nagoyameshiapp:restaurant", review.restaurant.id)
-
+    
 review_edit = ReviewEditView.as_view()
 
 
 # レビュー削除用のビュー
 class ReviewDeleteView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
+        ## 有料会員の確認 start ##
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshiapp:index")
+
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
+        except:
+            print("このカスタマーIDは無効です。")
+
+            premium_user.delete()
+
+            return redirect("nagoyameshiapp:index")
+
+        is_active = False
+
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                is_active = True
+                
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not is_active:
+                return redirect("nagoyameshiapp:mypage")
+
+        # request.POSTの内容を書き換え可能にする。
+        copied = request.POST.copy()
+        copied["restaurant"]    = pk
+        copied["user"]          = request.user
+
+        # copiedをバリデーションする。
+        form = ReviewForm(copied)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+        ## 有料会員の確認 end ##
+
 
         review = Review.objects.filter(id=pk,user=request.user).first()
 
@@ -194,14 +334,55 @@ class ReservationDeleteView(LoginRequiredMixin,View):
 
 reservation_delete = ReservationDeleteView.as_view()
         
-
-
-
-
-
 # お気に入り登録用のビュー
 class FavoriteView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
+        ## 有料会員の確認 start ##
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshiapp:index")
+
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
+        except:
+            print("このカスタマーIDは無効です。")
+
+            premium_user.delete()
+
+            return redirect("nagoyameshiapp:index")
+
+        is_active = False
+
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                is_active = True
+                
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not is_active:
+                return redirect("nagoyameshiapp:mypage")
+
+        # request.POSTの内容を書き換え可能にする。
+        copied = request.POST.copy()
+        copied["restaurant"]    = pk
+        copied["user"]          = request.user
+
+        # copiedをバリデーションする。
+        form = ReviewForm(copied)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+        
+        ## 有料会員の確認 end ##
 
         # 店舗のお気に入り登録 
         print("お気に入り登録をする")
@@ -226,6 +407,7 @@ class FavoriteView(LoginRequiredMixin,View):
                 print(form.errors)
 
         return redirect("nagoyameshiapp:restaurant", pk)
+
 # urls.pyから呼び出ししやすいようにする
 favorite = FavoriteView.as_view()
 
@@ -233,7 +415,51 @@ favorite = FavoriteView.as_view()
 # 予約登録用のビュー
 class ReservationView(LoginRequiredMixin,View):
     def post(self, request, pk, *args, **kwargs):
-        
+        ## 有料会員の確認 start ##
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
+
+        if not premium_user:
+            print("カスタマーIDがセットされていません。")
+            return redirect("nagoyameshiapp:index")
+
+        # カスタマーIDを元にStripeに問い合わせ
+        try:
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
+        except:
+            print("このカスタマーIDは無効です。")
+
+            premium_user.delete()
+
+            return redirect("nagoyameshiapp:index")
+
+        is_active = False
+
+        # ステータスがアクティブであるかチェック。
+        for subscription in subscriptions.auto_paging_iter():
+            if subscription.status == "active":
+                print("サブスクリプションは有効です。")
+                is_active = True
+                
+            else:
+                print("サブスクリプションが無効です。")
+
+        if not is_active:
+                return redirect("nagoyameshiapp:mypage")
+
+        # request.POSTの内容を書き換え可能にする。
+        copied = request.POST.copy()
+        copied["restaurant"]    = pk
+        copied["user"]          = request.user
+
+        # copiedをバリデーションする。
+        form = ReviewForm(copied)
+
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+        ## 有料会員の確認 end ##        
+
         print("予約します")
 
         copied = request.POST.copy()
@@ -267,6 +493,10 @@ class MypageView(LoginRequiredMixin,View):
         # 予約の〆日をコンテキストに追加し、mypageのテンプレートで利用
         # 一日以上の予約
         context["deadline"]   =  timezone.now() + datetime.timedelta(days=1)
+
+        # PremiumUserのデータがあるか否かを確認する
+        context["is_premium"] = PremiumUser.objects.filter(user=request.user).exists()
+
 
         return render(request, "nagoyameshiapp/mypage.html",context)
     
@@ -371,14 +601,15 @@ success     = SuccessView.as_view()
 # サブスクリプションの操作関係
 class PortalView(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
 
-        if not request.user.customer:
+        if not premium_user:
             print( "有料会員登録されていません")
             return redirect("nagoyameshiapp:index")
 
         # ユーザーモデルに記録しているカスタマーIDを使って、ポータルサイトへリダイレクト
         portalSession   = stripe.billing_portal.Session.create(
-            customer    = request.user.customer,
+            customer    = premium_user.premium_code,
             return_url  = request.build_absolute_uri(reverse_lazy("nagoyameshiapp:index")),
         )
 
@@ -392,7 +623,7 @@ class PremiumView(View):
         
 
         # TODO: ↓ お気に入り・レビュー・予約のビューに入れる。
-        premium_user = PremiumUser.objects.filter(user=request.ueser).first()
+        premium_user = PremiumUser.objects.filter(user=request.user).first()
 
         if not premium_user:
             print("カスタマーIDがセットされていません。")
@@ -401,7 +632,7 @@ class PremiumView(View):
 
         # カスタマーIDを元にStripeに問い合わせ
         try:
-            subscriptions = stripe.Subscription.list(customer=request.premium_user.premium_code)
+            subscriptions = stripe.Subscription.list(customer=premium_user.premium_code)
         except:
             print("このカスタマーIDは無効です。")
 
