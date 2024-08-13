@@ -91,5 +91,7 @@ class Reservation(models.Model):
 
 class PremiumUser(models.Model):
     user        = models.ForeignKey(User, verbose_name="会員", on_delete=models.CASCADE)
-
     premium_code= models.TextField(verbose_name="有料会員コード")
+
+    def __str__(self):
+        return self.user.username
